@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>แผนที่เที่ยวไทย – 5 อันดับสถานที่ท่องเที่ยวแต่ละจังหวัด</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--tx:#1d2b2a;--mu:#6b7775;--ac:#0f8b8d;--ln:#d9d5ca;--land:#dcebe4;--pin:#e4572e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a19;--card:#1b2625;--tx:#e8efed;--mu:#97a7a4;--ac:#3cc4c6;--ln:#2f3f3d;--land:#22362f;--pin:#ff7a52}}
+:root[data-theme="dark"]{--bg:#121a19;--card:#1b2625;--tx:#e8efed;--mu:#97a7a4;--ac:#3cc4c6;--ln:#2f3f3d;--land:#22362f;--pin:#ff7a52}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font-family:"Noto Sans Thai",system-ui,sans-serif;line-height:1.5}
+.w{max-width:960px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.5rem;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 16px}
+input{width:100%;padding:12px 14px;font:inherit;border:1px solid var(--ln);border-radius:12px;background:var(--card);color:var(--tx)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+button.c{font:inherit;padding:6px 12px;border:1px solid var(--ln);border-radius:99px;background:var(--card);color:var(--tx);cursor:pointer}
+button.c:hover{border-color:var(--ac);color:var(--ac)}
+.g{display:grid;grid-template-columns:1fr;gap:16px}@media(min-width:760px){.g{grid-template-columns:1.3fr 1fr}}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:12px}
+svg{width:100%;height:auto;display:block}
+.land{fill:var(--land);stroke:var(--ac);stroke-width:1.5}
+.dot{fill:var(--pin);stroke:#fff;stroke-width:1.5;cursor:pointer}.dot:hover{r:9}
+.item{display:flex;gap:10px;align-items:center;padding:10px;border-radius:10px;cursor:pointer;border:1px solid transparent}
+.item:hover,.item.on{border-color:var(--ac);background:var(--bg)}
+.num{flex:none;width:28px;height:28px;border-radius:50%;background:var(--pin);color:#fff;display:grid;place-items:center;font-weight:700}
+.item a{margin-left:auto;color:var(--ac);font-size:.85rem;white-space:nowrap}
+.bk{margin-bottom:12px}.hint{color:var(--mu);font-size:.85rem;margin-top:8px}
+</style></head><body><div class="w">
+<h1>🗺️ แผนที่เที่ยวไทย</h1>
+<p class="s">ค้นหาจังหวัด หรือกดหมุดบนแผนที่ เพื่อดู 5 สถานที่ท่องเที่ยวยอดนิยม</p>
+<div id="app"></div></div>
+<script>
+const D=`เชียงใหม่|ดอยสุเทพ,18.805,98.922;ดอยอินทนนท์,18.588,98.487;วัดเจดีย์หลวง,18.787,98.986;ม่อนแจ่ม,18.906,98.800;ซันเดย์วอล์กกิ้งสตรีท ท่าแพ,18.787,98.993
+เชียงราย|วัดร่องขุ่น,19.824,99.763;วัดร่องเสือเต้น,19.907,99.830;ดอยตุง,20.330,99.830;สามเหลี่ยมทองคำ,20.355,100.083;ภูชี้ฟ้า,19.860,100.370
+กรุงเทพฯ|พระบรมมหาราชวัง,13.750,100.492;วัดอรุณฯ,13.744,100.489;วัดโพธิ์,13.746,100.493;ไอคอนสยาม,13.726,100.510;ตลาดนัดจตุจักร,13.800,100.550
+พระนครศรีอยุธยา|วัดไชยวัฒนาราม,14.343,100.543;วัดมหาธาตุ,14.357,100.568;วัดพระศรีสรรเพชญ์,14.356,100.558;วัดพนัญเชิง,14.343,100.571;พระราชวังบางปะอิน,14.233,100.579
+กาญจนบุรี|สะพานข้ามแม่น้ำแคว,14.040,99.502;น้ำตกเอราวัณ,14.372,99.145;ช่องเขาขาด,14.360,98.950;เขื่อนศรีนครินทร์,14.410,99.130;สังขละบุรี สะพานมอญ,15.140,98.480
+ประจวบคีรีขันธ์|หาดหัวหิน,12.568,99.957;ตลาดฉัตรไชย,12.570,99.953;พระราชวังไกลกังวล,12.580,99.960;อุทยานแห่งชาติสามร้อยยอด,12.230,99.970;อ่าวมะนาว,11.800,99.800
+เพชรบุรี|พระนครคีรี (เขาวัง),13.158,99.944;วัดมหาธาตุวรวิหาร,13.110,99.940;หาดชะอำ,12.800,99.970;อุทยานแก่งกระจาน,12.840,99.620;หาดเจ้าสำราญ,13.070,100.080
+ชลบุรี|หาดพัทยา,12.930,100.880;ปราสาทสัจธรรม,12.972,100.890;เกาะล้าน,12.920,100.780;สวนนงนุช,12.760,100.930;เขาชีจรรย์,12.790,100.970
+ตราด|หาดทรายขาว เกาะช้าง,12.040,102.310;หาดคลองพร้าว เกาะช้าง,12.000,102.350;เกาะหมาก,11.820,102.480;เกาะกูด,11.650,102.550;ตัวเมืองตราด,12.240,102.510
+นครราชสีมา|เขาใหญ่,14.430,101.370;อนุสาวรีย์ท้าวสุรนารี,14.979,102.098;ปราสาทหินพิมาย,15.220,102.490;ฟาร์มโชคชัย,14.720,101.750;วังน้ำเขียว,14.180,101.800
+เลย|ภูกระดึง,16.870,101.770;ภูเรือ,17.480,101.350;เชียงคาน,17.900,101.670;แก่งคุดคู้,17.897,101.665;พระธาตุศรีสองรัก,17.480,101.730
+สุโขทัย|วัดมหาธาตุ,17.018,99.704;วัดศรีชุม,17.027,99.696;วัดสระศรี,17.016,99.703;วัดตระพังเงิน,17.016,99.712;ศรีสัชนาลัย,17.520,99.740
+น่าน|วัดภูมินทร์,18.775,100.773;วัดพระธาตุแช่แห้ง,18.767,100.795;วัดพระธาตุเขาน้อย,18.779,100.772;ปัว,19.170,100.930;ดอยเสมอดาว,19.000,101.150
+แม่ฮ่องสอน|ปาย,19.358,98.440;ถ้ำลอด,19.570,98.250;วัดพระธาตุดอยกองมู,19.298,97.968;สะพานซูตองเป,19.290,97.975;ปางอุ๋ง,19.470,98.100
+ภูเก็ต|พระใหญ่ ภูเก็ต,7.828,98.307;หาดป่าตอง,7.896,98.296;แหลมพรหมเทพ,7.762,98.305;ย่านเมืองเก่าภูเก็ต,7.884,98.388;วัดฉลอง,7.846,98.337
+กระบี่|อ่าวนาง,8.032,98.826;ไร่เลย์,8.011,98.837;เกาะพีพี,7.740,98.770;สระมรกต,7.800,99.180;วัดถ้ำเสือ,8.116,98.930
+สุราษฎร์ธานี|เกาะสมุย,9.512,100.014;เกาะพะงัน,9.750,100.040;เกาะเต่า,10.095,99.840;เขื่อนเชี่ยวหลาน,8.960,98.530;วัดพระบรมธาตุไชยา,9.380,99.140`
+.split("\n").map(l=>{const[n,r]=l.split("|");const s=r.split(";").map(x=>{const a=x.split(",");return{n:a[0],y:+a[1],x:+a[2]}});return{n,s,y:s.reduce((t,p)=>t+p.y,0)/5,x:s.reduce((t,p)=>t+p.x,0)/5}});
+const O=[[99.9,20.4],[100.5,20.2],[100.1,19.6],[100.9,19.55],[101.2,19.2],[100.9,18.4],[101.1,17.8],[102.1,18.1],[103.0,18.3],[103.8,18.3],[104.3,17.9],[104.8,17.4],[104.7,16.9],[104.8,16.4],[105.2,15.9],[105.6,15.6],[105.5,14.9],[105.0,14.3],[103.5,14.4],[102.5,14.2],[102.3,13.5],[102.9,12.2],[102.4,11.9],[101.9,12.6],[101.0,12.7],[100.9,13.4],[100.5,13.4],[100.0,13.1],[99.9,12.6],[100.0,12.0],[99.6,10.5],[99.2,9.2],[100.0,8.4],[100.4,7.2],[100.6,6.5],[101.0,6.2],[100.1,6.5],[99.7,7.5],[98.3,8.0],[98.4,9.3],[98.6,9.9],[98.5,11.0],[99.1,11.5],[99.1,12.5],[99.2,13.5],[99.0,14.5],[98.5,15.0],[98.6,16.0],[97.7,17.0],[97.7,18.5],[97.4,19.0],[98.0,19.8],[99.0,20.0]];
+const $=s=>document.querySelector(s),app=$("#app"),K=58;
+const px=o=>((o[0]-97.2)*K).toFixed(1)+","+((20.6-o[1])*K).toFixed(1);
+const gm=p=>"https://www.google.com/maps/search/?api=1&query="+p.y+","+p.x;
+function home(q=""){
+ const L=D.map((p,i)=>({p,i})).filter(o=>o.p.n.includes(q.trim()));
+ app.innerHTML=`<input id="q" placeholder="ค้นหาจังหวัด เช่น เชียงใหม่, ภูเก็ต" value="${q}" autocomplete="off">
+ <div class="chips">${L.length?L.map(o=>`<button class="c" data-i="${o.i}">${o.p.n}</button>`).join(""):"<span class='hint'>ยังไม่มีข้อมูลจังหวัดนี้ (ตอนนี้มี "+D.length+" จังหวัดยอดนิยม)</span>"}</div>
+ <div class="card"><svg viewBox="0 0 500 860" role="img" aria-label="แผนที่ประเทศไทย"><polygon class="land" points="${O.map(px).join(" ")}"/>${D.map((p,i)=>`<circle class="dot" r="6" cx="${px([p.x,p.y]).split(",")[0]}" cy="${px([p.x,p.y]).split(",")[1]}" data-i="${i}"><title>${p.n}</title></circle>`).join("")}</svg>
+ <div class="hint" id="hv">แผนที่แสดงตำแหน่งโดยประมาณ · กดหมุดสีส้มเพื่อดูจังหวัด</div></div>`;
+ const qi=$("#q");qi.oninput=()=>{home(qi.value);const n=$("#q");n.focus();n.setSelectionRange(n.value.length,n.value.length)};
+ app.querySelectorAll("[data-i]").forEach(e=>{e.onclick=()=>{location.hash="p"+e.dataset.i};e.onmouseover=()=>{$("#hv").textContent=D[e.dataset.i].n}});
+}
+function show(i){
+ const p=D[i],W=600,H=420,pad=60,mn=Math.min(...p.s.map(a=>a.x)),mx=Math.max(...p.s.map(a=>a.x)),my=Math.min(...p.s.map(a=>a.y)),My=Math.max(...p.s.map(a=>a.y));
+ const c=Math.cos(p.y*Math.PI/180),dx=Math.max((mx-mn)*c,.02),dy=Math.max(My-my,.02),k=Math.min((W-2*pad)/dx,(H-2*pad)/dy);
+ const ox=(W-dx*k)/2,oy=(H-dy*k)/2,X=a=>ox+(a.x-mn)*c*k,Y=a=>oy+(My-a.y)*k;
+ let g="";for(let t=0;t<=W;t+=50)g+=`<line x1="${t}" y1="0" x2="${t}" y2="${H}" stroke="var(--ln)"/>`;for(let t=0;t<=H;t+=50)g+=`<line x1="0" y1="${t}" x2="${W}" y2="${t}" stroke="var(--ln)"/>`;
+ app.innerHTML=`<button class="c bk" id="b">← กลับไปแผนที่ประเทศไทย</button><h1>📍 ${p.n}: 5 อันดับสถานที่เที่ยว</h1>
+ <div class="g"><div class="card"><svg viewBox="0 0 ${W} ${H}"><rect width="${W}" height="${H}" fill="var(--land)" rx="10"/>${g}${p.s.map((a,j)=>`<g class="pin" data-j="${j}" style="cursor:pointer"><path d="M${X(a)} ${Y(a)}c-14-16-18-22-18-30a18 18 0 1136 0c0 8-4 14-18 30z" fill="var(--pin)" stroke="#fff" stroke-width="2"/><text x="${X(a)}" y="${Y(a)-25}" text-anchor="middle" fill="#fff" font-weight="700" font-size="15">${j+1}</text></g>`).join("")}</svg>
+ <div class="hint">ตำแหน่งหมุดโดยประมาณ กด “เปิดใน Google Maps” เพื่อดูแผนที่จริง</div></div>
+ <div class="card">${p.s.map((a,j)=>`<div class="item" data-j="${j}"><span class="num">${j+1}</span><span>${a.n}</span><a href="${gm(a)}" target="_blank" rel="noopener">เปิดใน Google Maps ↗</a></div>`).join("")}</div></div>`;
+ $("#b").onclick=()=>{location.hash="";};
+ app.querySelectorAll("[data-j]").forEach(e=>e.onmouseover=e.onclick=()=>{app.querySelectorAll(".item").forEach(x=>x.classList.toggle("on",x.dataset.j==e.dataset.j))});
+}
+function route(){const m=/^#p(\d+)$/.exec(location.hash);m&&D[m[1]]?show(+m[1]):home();window.scrollTo(0,0)}
+addEventListener("hashchange",route);route();
+</script></body></html>
